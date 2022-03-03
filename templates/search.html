@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Photo Search</title>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='imagegallary.css') }}">
+    </head>
+
+    <body>
+        <form method="post" action="{{ url_for('photo_search') }}">
+            <label for="search_space">Search for photos</label>
+            <input type="text" name="search_space" /><br />
+            <input type="submit" />
+        </form>
+    </body>
+</html>
