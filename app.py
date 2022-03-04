@@ -36,7 +36,7 @@ app = Flask(__name__)
 app.secret_key = 'super secret string'  # Change this!
 
 #These will need to be changed according to your creditionals
-app.config['MYSQL_DATABASE_USER'] = 'user'
+app.config['MYSQL_DATABASE_USER'] = 'username'
 app.config['MYSQL_DATABASE_PASSWORD'] = 'password'
 app.config['MYSQL_DATABASE_DB'] = 'photo_sharing_website'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
@@ -93,14 +93,7 @@ def new_page_function():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	if flask.request.method == 'GET':
-		return '''
-			   <form action='login' method='POST'>
-				<input type='text' name='email' id='email' placeholder='email'></input>
-				<input type='password' name='password' id='password' placeholder='password'></input>
-				<input type='submit' name='submit'></input>
-			   </form></br>
-		   <a href='/'>Home</a>
-			   '''
+		return render_template('login.html')
 	#The request method is POST (page is recieving data)
 	email = flask.request.form['email']
 	cursor = conn.cursor()
@@ -155,7 +148,7 @@ def register_user():
 		user = User()
 		user.id = email
 		flask_login.login_user(user)
-		return render_template('hello.html', name=email, message='Account Created!')
+		return render_template('hello.html', name=getUserIdFromEmail(flask_login.current_user.id), message='Account Created!')
 	else:
 		print("couldn't find all tokens")
 		return flask.redirect(flask.url_for('register'))
@@ -183,7 +176,7 @@ def isEmailUnique(email):
 @app.route('/profile')
 @flask_login.login_required
 def protected():
-	return render_template('hello.html', name=flask_login.current_user.id, message="Here's your profile")
+	return render_template('hello.html', name=getUserIdFromEmail(flask_login.current_user.id), message="Here's your profile")
 
 #begin photo uploading code
 # photos uploaded using base64 encoding so they can be directly embeded in HTML
@@ -204,7 +197,7 @@ def upload_file():
 		cursor.execute("INSERT INTO albums (owner_id, album_name, date_of_creation) VALUES ('{0}', '{1}', '{2}')".format(uid, "test", datetime.now()))
 		cursor.execute("INSERT INTO photos (album_id, caption, photo, score) VALUES ('{0}', '{1}', '{2}', '{3}' )".format(1, caption, photo_string, 0))
 		conn.commit()
-		return render_template('hello.html', name=flask_login.current_user.id, message='Photo uploaded!', photos=getUsersPhotos(uid), base64=base64)
+		return render_template('hello.html', name=getUserIdFromEmail(flask_login.current_user.id), message='Photo uploaded!', photos=getUsersPhotos(uid), base64=base64)
 	#The method is GET so we return a  HTML form to upload the a photo.
 	else:
 		return render_template('upload.html')
@@ -220,9 +213,9 @@ def photo_search():
 		cursor.execute("SELECT photo, photo_id, caption, score FROM photos WHERE caption LIKE '%" + search_term + "%'")
 		result = cursor.fetchall()
 		if(result == ()):
-			return render_template('hello.html', name=flask_login.current_user.id, message='No results found... Please try again.', photos=None, base64=base64)
+			return render_template('hello.html', name=getUserIdFromEmail(flask_login.current_user.id), message='No results found... Please try again.', photos=None, base64=base64)
 		else:
-			return render_template('hello.html', name=flask_login.current_user.id, message='Here are the results!', photos=result, base64=base64)
+			return render_template('hello.html', name=getUserIdFromEmail(flask_login.current_user.id), message='Here are the results!', photos=result, base64=base64)
 
 	else:
 		return render_template('search.html')

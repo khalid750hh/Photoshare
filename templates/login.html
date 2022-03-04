@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Photoshare</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='imagegallary.css') }}">
+</head>
+
+<body>
+    <div id="login_form">
+        <form action='login' method='POST'>
+            <input type='text' name='email' id='email' placeholder='email'></input>
+            <input type='password' name='password' id='password' placeholder='password'></input>
+            <input type='submit' name='submit'></input>
+        </form>
+        <a href='/'>Home</a>
+    </div>
+    
+</body>
+
+</html>

@@ -1,5 +1,52 @@
 body{
-    background-color: darkslategray;
+    background-color: #323031;
+    color:#dddddd;
+}
+
+a{
+    color: #ccb6a7;
+}
+
+
+#login_form{
+  border-radius: 5px;
+  background-color: #424041;
+  padding: 20px;
+}
+
+#login_form input[type=submit] {
+    width: 100%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#login_form input[type=submit]:hover {
+    background-color: #45a049;
+}
+
+#login_form input[type=text], select {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#login_form input[type=password], select {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
 }
 
 #photos{
@@ -22,13 +69,13 @@ body{
 }
 
 #photos li{
-    color: aquamarine;
+    color: #dddddd;
     text-align: center;
     display: inline;
     float: left;
     margin: 1vw;
     width: 20vw;
     padding:0;
-    border: solid aqua;
+    border: solid #dddddd;
     border-radius: 10px;
 }
