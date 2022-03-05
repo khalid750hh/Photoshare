@@ -2,17 +2,21 @@
 
 <head>
     <title>Upload a photo!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='imagegallary.css') }}">
-  </head>
-    <body>
-        <div class="title">
-            <h1>Upload a photo to Photoshare</h1>
-        </div>
-            <form method="post" enctype="multipart/form-data" action="/upload">
-                <label for="photo">Select photo:</label>
-                <input type="file" name="photo" required='true' /><br />
-                <label for="caption">Please caption:</label>
-                <input type="text" name="caption" required='true' /><br />
-                <input type="submit" value="Upload" />
-            </form>
-    </body>
+</head>
+
+<body>
+    <div class="title">
+        <h1>Upload a photo to Photoshare</h1>
+    </div>
+    <form method="post" enctype="multipart/form-data" action="/upload">
+        <label for="photo">Select photo:</label>
+        <input type="file" name="photo" required='true' /><br />
+        <label for="caption">Please caption:</label>
+        <input type="text" name="caption" required='true' /><br />
+        <input type="submit" value="Upload" />
+    </form>
+</body>

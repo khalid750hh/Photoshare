@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Photoshare</title>
+    <title>Profile | Photoshare</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet">
@@ -10,7 +10,6 @@
 </head>
 
 <body>
-
     <header>
         <h1>Photoshare</h1>
         <p>Share your life!</p>
@@ -39,16 +38,29 @@
             {% endif %}
         </nav>
 
-        <div id="login_form">
-            <h1>Photoshare</h1>
-            <h2>Login</h2>
-            <form action='login' method='POST'>
-                <input type='text' name='email' id='email' placeholder='email'></input>
-                <input type='password' name='password' id='password' placeholder='password'></input>
-                <input type='submit' name='submit' value="login"></input>
-            </form>
-            <a href='/'>Home</a>
+        {% if name %}
+        <h1>{{name}}</h1>
+        {% endif %}
+
+        {% if realname %}
+        <h2>{{realname}}</h2>
+        {% endif %}
+
+
+        {% if photos %}
+        <div id="photos">
+            <h2>{{name}} photos</h2>
+            <ul>
+                {% for photo in photos %}
+
+                <li>{{photo[2]}}<br>
+                    <img src='data:image/jpg;base64, {{ photo[0] }}' />
+                </li>
+                {% endfor %}
+            </ul>
         </div>
+
+        {% endif %}
 
     </div>
 

@@ -36,8 +36,8 @@ app = Flask(__name__)
 app.secret_key = 'super secret string'  # Change this!
 
 #These will need to be changed according to your creditionals
-app.config['MYSQL_DATABASE_USER'] = 'username'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'password'
+app.config['MYSQL_DATABASE_USER'] = 'USERNAME'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'PASSWORD'
 app.config['MYSQL_DATABASE_DB'] = 'photo_sharing_website'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
@@ -158,10 +158,22 @@ def getUsersPhotos(uid):
 	cursor.execute("SELECT photo, photo_id, caption FROM photos WHERE album_id in (SELECT album_id FROM albums WHERE owner_id = '{0}')".format(uid))
 	return cursor.fetchall() #NOTE return a list of tuples, [(imgdata, pid, caption), ...]
 
+def getLatestPhotos():
+	cursor = conn.cursor()
+	cursor.execute("SELECT photo, photo_id, caption FROM photos order by photo_id desc limit 50")
+	return cursor.fetchall() #NOTE return a list of tuples, [(imgdata, pid, caption), ...]
+
 def getUserIdFromEmail(email):
 	cursor = conn.cursor()
 	cursor.execute("SELECT user_id  FROM Users WHERE email = '{0}'".format(email))
 	return cursor.fetchone()[0]
+
+def getUserFullNameFromId(id):
+	cursor = conn.cursor()
+	cursor.execute("SELECT first_name, last_name FROM Users WHERE user_id = '{0}'".format(id))
+	name = cursor.fetchone()
+	name = name[0] + " " + name[1]
+	return name
 
 def isEmailUnique(email):
 	#use this to check if a email has already been registered
@@ -176,7 +188,10 @@ def isEmailUnique(email):
 @app.route('/profile')
 @flask_login.login_required
 def protected():
-	return render_template('hello.html', name=getUserIdFromEmail(flask_login.current_user.id), message="Here's your profile")
+	uid = getUserIdFromEmail(flask_login.current_user.id)
+	fullname = getUserFullNameFromId(uid)
+	#likes = getUserLikesFromId(uid)
+	return render_template('profile.html', name=uid, realname=fullname, photos=getUsersPhotos(uid), base64=base64)
 
 #begin photo uploading code
 # photos uploaded using base64 encoding so they can be directly embeded in HTML
@@ -227,7 +242,12 @@ def photo_search():
 #default page
 @app.route("/", methods=['GET'])
 def hello():
-	return render_template('hello.html', message='Welecome to Photoshare')
+	latest = getLatestPhotos()
+	try:
+		return render_template('hello.html',name=getUserIdFromEmail(flask_login.current_user.id), message='Welecome to Photoshare', photos=latest, base64=base64, newest="newest")
+	except:
+		return render_template('hello.html', message='Welecome to Photoshare', photos=latest, base64=base64, newest="newest")
+	
 
 
 if __name__ == "__main__":
