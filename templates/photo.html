@@ -72,8 +72,14 @@
         <div id="comments">
             <h2>Comments ({{comments[0]}}):</h2>
             <div id="comment">
-                <form action='comment' method='POST'>
+                <form action='/comment' method='POST'>
                     <input type='text' name='comment' id='comment' placeholder='Share your thoughts here'>
+                    <input type="hidden" name="photo_id" id="photo_id" value={{photo[0]}}>
+                    {%if loggedin %}
+                    <input type="hidden" name="user_id" id="user_id" value={{loggedin}}>
+                    {% else %}
+                    <input type="hidden" name="user_id" id="user_id" value="guest">
+                    {% endif %}
                     <input type='submit' name='submit' value="comment">
                 </form>
             </div>
@@ -92,8 +98,14 @@
         <div id="comments">
             <h2>Comments (0):</h2>
             <div id="comment">
-                <form action='comment' method='POST'>
+                <form action='/comment' method='POST'>
                     <input type='text' name='comment' id='comment' placeholder='Share your thoughts here'>
+                    <input type="hidden" name="photo_id" id="photo_id" value={{photo[0]}}>
+                    {%if loggedin %}
+                    <input type="hidden" name="user_id" id="user_id" value={{loggedin}}>
+                    {% else %}
+                    <input type="hidden" name="user_id" id="user_id" value="guest">
+                    {% endif %}
                     <input type='submit' name='submit' value="comment">
                 </form>
             </div>

@@ -20,6 +20,7 @@ import io
 from tkinter import E, Image
 from typing import BinaryIO
 from unittest import result
+from xml.etree.ElementTree import Comment
 from MySQLdb import Binary
 import flask
 from flask import Flask, Response, request, render_template, redirect, url_for
@@ -30,6 +31,7 @@ import flask_login
 import os, base64
 
 from itsdangerous import base64_decode, base64_encode
+from sqlalchemy import table
 
 mysql = MySQL()
 app = Flask(__name__)
@@ -140,8 +142,10 @@ def register_user():
 		print("couldn't find all tokens") #this prints to shell, end users will not see this (all print statements go to shell)
 		return flask.redirect(flask.url_for('register'))
 	cursor = conn.cursor()
-	test =  isEmailUnique(email)
-	if test:
+
+	test1 = isUsernameValid(username)
+	test2 =  isEmailUnique(email)
+	if (test1 and test2):
 		print(cursor.execute("INSERT INTO Users (user_id, first_name, last_name, email, date_of_birth, hometown, gender, user_password, score) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}')".format(username, firstname, lastname, email, birthday, hometown, gender, password, 0)))
 		conn.commit()
 		#log user in
@@ -183,6 +187,16 @@ def isEmailUnique(email):
 		return False
 	else:
 		return True
+
+def isUsernameValid(username):
+	#use this to check if a email has already been registered
+	if (len(username) > 3 and username.lower() != "guest"):
+		cursor = conn.cursor()
+		if cursor.execute("SELECT user_id  FROM Users WHERE user_id = '{0}'".format(username)):
+			#this means there are greater than zero entries with that username
+			return False
+		else:
+			return True
 #end login code
 
 @app.route('/profile')
@@ -192,6 +206,22 @@ def protected():
 	fullname = getUserFullNameFromId(uid)
 	#likes = getUserLikesFromId(uid)
 	return render_template('profile.html', name=uid, realname=fullname, photos=getUsersPhotos(uid), base64=base64)
+
+@app.route('/album', methods=['GET', 'POST'])
+@flask_login.login_required
+def albums():
+
+	if request.method == 'POST':
+		album_name = request.form.get('album_name')
+		uid = getUserIdFromEmail(flask_login.current_user.id)
+		cursor = conn.cursor()
+		cursor.execute("INSERT INTO albums (owner_id, album_name, date_of_creation) VALUES ('{0}', '{1}', '{2}')".format(getUserIdFromEmail(flask_login.current_user.id), album_name, datetime.now()))
+		conn.commit()
+		return render_template('hello.html', name=getUserIdFromEmail(flask_login.current_user.id), message='Photo uploaded!', photos=getUsersPhotos(uid), base64=base64)
+
+	else:
+		uid = getUserIdFromEmail(flask_login.current_user.id)
+		return render_template('album.html', name=uid)
 
 #begin photo uploading code
 # photos uploaded using base64 encoding so they can be directly embeded in HTML
@@ -206,17 +236,20 @@ def upload_file():
 		uid = getUserIdFromEmail(flask_login.current_user.id)
 		imgfile = request.files['photo']
 		caption = request.form.get('caption')
+		album_id = request.form.get('album')
 		photo_data =imgfile.read()
 		photo_string = base64.b64encode(photo_data).decode('ascii')
 		cursor = conn.cursor()
-		cursor.execute("INSERT INTO albums (owner_id, album_name, date_of_creation) VALUES ('{0}', '{1}', '{2}')".format(getUserIdFromEmail(flask_login.current_user.id), "test", datetime.now()))
 		#need to change album id in format after implementing albums properly. also might need to change photos table to include owner_id for an easier time.
-		cursor.execute("INSERT INTO photos (album_id, caption, photo, score) VALUES ('{0}', '{1}', '{2}', '{3}' )".format(1, caption, photo_string, 0))
+		cursor.execute("INSERT INTO photos (album_id, caption, photo, score) VALUES ('{0}', '{1}', '{2}', '{3}' )".format(album_id, caption, photo_string, 0))
 		conn.commit()
 		return render_template('hello.html', name=getUserIdFromEmail(flask_login.current_user.id), message='Photo uploaded!', photos=getUsersPhotos(uid), base64=base64)
 	#The method is GET so we return a  HTML form to upload the a photo.
 	else:
-		return render_template('upload.html')
+		uid = getUserIdFromEmail(flask_login.current_user.id)
+		cursor = conn.cursor()
+		cursor.execute("SELECT album_id, album_name FROM albums WHERE owner_id = '{0}'".format(uid))
+		return render_template('upload.html', name=getUserIdFromEmail(flask_login.current_user.id), albums=cursor.fetchall())
 #end photo uploading code
 
 
@@ -260,7 +293,23 @@ def photo():
 		latest = getLatestPhotos()
 		return render_template('hello.html', message='Photo retrieval failed... Please try again later.', photos=latest, base64=base64, newest="newest")
 
-
+@app.route("/comment", methods=['POST'])
+def comment():
+	if request.method == 'POST':
+		photo_id=request.form.get('photo_id')
+		owner_id=request.form.get('user_id')
+		comment=request.form.get('comment')
+		cursor = conn.cursor()
+		#need to change album id in format after implementing albums properly. also might need to change photos table to include owner_id for an easier time.
+		cursor.execute("INSERT INTO comments (comment_text, owner_id, date_posted, photo_id) VALUES ('{0}', '{1}', '{2}', '{3}' )".format(comment, owner_id, datetime.now(), photo_id))
+		conn.commit()
+		cursor.execute("SELECT photo_id, caption, photo, album_id FROM photos where photo_id={0}".format(photo_id))
+		photo_info=cursor.fetchone()
+		try:
+			return render_template('photo.html',loggedin=getUserIdFromEmail(flask_login.current_user.id), name=owner_id, photo=photo_info, base64=base64)
+		except:
+			return render_template('photo.html', name=owner_id, photo=photo_info, base64=base64)
+		
 
 #default page
 @app.route("/", methods=['GET'])

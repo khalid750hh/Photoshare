@@ -1,48 +1,92 @@
 <!-- author ben lawson balawson@bu.edu -->
 
+<!DOCTYPE html>
+
+<html>
+
 <head>
     <title>Create an account!</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='imagegallary.css') }}">\
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='imagegallary.css') }}">
 </head>
-{%if not supress%}
-<h1> Email already in use! Use another one or <a href="/login">login</a></h1>
-{% endif %}
 
 <body>
-    <div class="title">
-        <h1>Enter your information below</h1>
-    </div>
-    <div id="content">
+
+    <header>
+        <h1>Photoshare</h1>
+        <p>Share your life!</p>
+        <hr>
+    </header>
+
+    {%if not supress%}
+    <h1> Email already in use! Use another one or <a href="/login">login</a></h1>
+    {% endif %}
+
+    
+    <div id="container">
+
+        <nav>
+            {% if name %}
+            <ul>
+              <li><a href='/'>Home</a></li>
+              <li><a href='/profile'>profile</a> </li>
+              <li><a href="/search">Search for a photo</a></li>
+              <li><a href='/upload'>Upload a photo</a> </li>
+              <li><a href='/logout'>Logout</a></li>
+            </ul>
+      
+            {% else %}
+            <ul>
+              <li><a href='/'>Home</a></li>
+              <li><a href="/search">Search for a photo</a></li>
+              <li><a href='/upload'>Upload a photo</a> </li>
+              <li><a href='/login'>Login</a></li>
+            </ul>
+            {% endif %}
+          </nav>
+
+
+        <div class="title">
+            <h1>Enter your information below</h1>
+        </div>
+
+
         <form method="post" action="{{ url_for('register_user') }}">
-            <label for="username">Enter your user name:</label>
+            <label for="username">Username:</label>
             <input type="text" name="username" /><br />
 
-            <label for="email">Enter your email:</label>
+            <label for="email">Email:</label>
             <input type="email" name="email" /><br />
 
-            <label for="password">Enter password:</label>
+            <label for="password">Password:</label>
             <input type="password" name="password" /><br />
 
-            <label for="firstname">Enter your first name:</label>
+            <label for="firstname">First name:</label>
             <input type="text" name="firstname" /><br />
 
-            <label for="lastname">Enter your last name:</label>
+            <label for="lastname">Last name:</label>
             <input type="text" name="lastname" /><br />
 
             <label for="birthday">Birthday:</label>
             <input type="date" id="birthday" name="birthday"> <br>
 
-            <label for="gender">Enter your gender:</label>
+            <label for="gender">Gender:</label>
             <input type="text" name="gender" /><br />
 
-            <label for="hometown">Enter your hometown:</label>
+            <label for="hometown">Hometown:</label>
             <input type="text" name="hometown" /><br />
 
-            <input type="submit" />
+            <input type="submit" value="Create account!" />
         </form>
     </div>
+    <a href='/'>Home</a>
+
+    <footer>
+        <hr>
+        <p>Copyright &#174; 2022 by Khalid Almaimouni</p>
+      </footer>
 </body>
-<a href='/'>Home</a>
+
+</html>

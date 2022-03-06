@@ -205,12 +205,12 @@ nav li{
 
 #photos li{
     color: #dddddd;
-    /*background-color: #424041;*/
+    background-color: #424041;
     text-align: center;
     float: left;
     display: inline;
     margin: 4vw 1vw;
-    height: 20vw;
+    width: 20vw;
     padding:0;
     border-radius: 10px;
 }
