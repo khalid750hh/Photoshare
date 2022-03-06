@@ -76,10 +76,12 @@ nav li{
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    font-family: 'Fredoka', sans-serif;
 }
 
 #login_form input[type=submit]:hover {
     background-color: #45a049;
+    font-family: 'Fredoka', sans-serif;
 }
 
 #login_form input[type=text], select {
@@ -90,6 +92,7 @@ nav li{
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
+    font-family: 'Fredoka', sans-serif;
 }
 
 #login_form input[type=password], select {
@@ -100,10 +103,25 @@ nav li{
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
+    font-family: 'Fredoka', sans-serif;
 }
 
 #photos{
     clear: both;
+}
+
+.photos input[type=submit] {
+    width: 100%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 1vw;
+    margin: auto;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Fredoka', sans-serif;
+    font-size: calc(2vw + 6);
+    text-align: center;
 }
 
 #options{
@@ -123,15 +141,76 @@ nav li{
 }
 
 
+.single ul{
+    margin: auto;
+}
+#like{
+    display: inline-block;
+}
+
+#like h1, h2, h3{
+    font-size: calc(1.2vw + 6px);
+}
+
+/* #like h2{
+    font-size: calc(2vw + 6);
+}
+
+#like h3{
+    font-size: calc(2vw + 6);
+} */
+
+#like input[type=submit]{
+    width: fit-content;
+    background-color: #4CAF50;
+    color: white;
+    padding: 1vw;
+    margin: auto;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Fredoka', sans-serif;
+    font-size: calc(2vw + 6);
+    text-align: center;
+}
+
+#comments{
+    clear: both;
+}
+
+#comment input[type=submit]{
+    width: 20%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 2vw;
+    margin: auto;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Fredoka', sans-serif;
+    font-size: calc(2vw + 6);
+    text-align: center;
+}
+
+#comment input[type=text]{
+    width: 79%;
+    padding: 2vw;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-family: 'Fredoka', sans-serif;
+}
+
 #photos li{
     color: #dddddd;
-    background-color: #424041;
+    /*background-color: #424041;*/
     text-align: center;
     float: left;
     display: inline;
-    margin: 1vw;
-    width: 20vw;
+    margin: 4vw 1vw;
+    height: 20vw;
     padding:0;
-    border: solid #424041;
     border-radius: 10px;
 }

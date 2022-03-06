@@ -1,0 +1,111 @@
+<!doctype html>
+
+<html>
+
+<head>
+    {% if photos %}
+    <title>{{photos[1]}} | Photoshare</title>
+    {% else %}
+    <title>Photoshare</title>
+    {% endif %}
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='imagegallary.css') }}">
+</head>
+
+<body>
+    <header>
+        <h1>Photoshare</h1>
+        <p>Share your life!</p>
+        <hr>
+    </header>
+
+
+    <div id="container">
+
+        <nav>
+            {% if loggedin %}
+            <ul>
+                <li><a href='/'>Home</a></li>
+                <li><a href='/profile'>profile</a> </li>
+                <li><a href="/search">Search for a photo</a></li>
+                <li><a href='/upload'>Upload a photo</a> </li>
+                <li><a href='/logout'>Logout</a></li>
+            </ul>
+
+            {% else %}
+            <ul>
+                <li><a href='/'>Home</a></li>
+                <li><a href="/search">Search for a photo</a></li>
+                <li><a href='/upload'>Upload a photo</a> </li>
+                <li><a href='/login'>Login</a></li>
+            </ul>
+            {% endif %}
+        </nav>
+
+
+        {% if photo %}
+        <div id="photos" class="single">
+            <ul>
+                <li><img src='data:image/jpg;base64, {{ photo[2] }}' /> </li>
+
+            </ul>
+
+        </div>
+
+        <div id="like">
+            {% if name %}
+            <h1>User: {{name}}</h1>
+            {% endif %}
+            <h2>Title: {{photo[1]}}</h2>
+            <h3>From album: {{photo[3]}}</h3>
+            {% if likes %}
+            <h3>Likes: {{likes}}</h3>
+            {% else %}
+            <h3>Likes: 0</h3>
+            {% endif %}
+            <form action='like' method='POST'>
+                <input type='submit' name='submit' value="like">
+            </form>
+        </div>
+
+        {% if comments %}
+        <div id="comments">
+            <h2>Comments ({{comments[0]}}):</h2>
+            <div id="comment">
+                <form action='comment' method='POST'>
+                    <input type='text' name='comment' id='comment' placeholder='Share your thoughts here'>
+                    <input type='submit' name='submit' value="comment">
+                </form>
+            </div>
+            <ul>
+                {% for comment in comments %}
+                <li>{{comment[0]}}<br>
+                    <!--Username-->
+                    {{comment[1]}}
+                    <!--Comment-->
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        {% else %}
+        <div id="comments">
+            <h2>Comments (0):</h2>
+            <div id="comment">
+                <form action='comment' method='POST'>
+                    <input type='text' name='comment' id='comment' placeholder='Share your thoughts here'>
+                    <input type='submit' name='submit' value="comment">
+                </form>
+            </div>
+        </div>
+        {% endif %}
+        {% endif %}
+
+    </div>
+
+
+    <footer>
+        <hr>
+        <p>Copyright &#174; 2022 by Khalid Almaimouni</p>
+    </footer>
+</body>

@@ -52,9 +52,13 @@
             <h2>{{name}} photos</h2>
             <ul>
                 {% for photo in photos %}
-
-                <li>{{photo[2]}}<br>
+                <li class="photos">{{photo[2]}}<br>
                     <img src='data:image/jpg;base64, {{ photo[0] }}' />
+                    <br>
+                    <form action='photo' method='POST'>
+                        <input type="hidden" name="photo_id" value={{photo[1]}}>
+                        <input type='submit' name='submit' value="View photo">
+                    </form>
                 </li>
                 {% endfor %}
             </ul>

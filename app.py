@@ -209,7 +209,8 @@ def upload_file():
 		photo_data =imgfile.read()
 		photo_string = base64.b64encode(photo_data).decode('ascii')
 		cursor = conn.cursor()
-		cursor.execute("INSERT INTO albums (owner_id, album_name, date_of_creation) VALUES ('{0}', '{1}', '{2}')".format(uid, "test", datetime.now()))
+		cursor.execute("INSERT INTO albums (owner_id, album_name, date_of_creation) VALUES ('{0}', '{1}', '{2}')".format(getUserIdFromEmail(flask_login.current_user.id), "test", datetime.now()))
+		#need to change album id in format after implementing albums properly. also might need to change photos table to include owner_id for an easier time.
 		cursor.execute("INSERT INTO photos (album_id, caption, photo, score) VALUES ('{0}', '{1}', '{2}', '{3}' )".format(1, caption, photo_string, 0))
 		conn.commit()
 		return render_template('hello.html', name=getUserIdFromEmail(flask_login.current_user.id), message='Photo uploaded!', photos=getUsersPhotos(uid), base64=base64)
@@ -236,6 +237,28 @@ def photo_search():
 		return render_template('search.html')
 
 		
+
+@app.route("/photo", methods=['GET', 'POST'])
+def photo():
+	if request.method == 'POST':
+		photo_id=request.form.get('photo_id')
+		cursor=conn.cursor()
+		cursor.execute("SELECT photo_id, caption, photo, album_id FROM photos where photo_id={0}".format(photo_id))
+		photo_info=cursor.fetchone()
+		caption=photo_info[1]
+		photo=photo_info[2]
+		album_id=photo_info[3]
+		cursor.execute("SELECT owner_id FROM albums where album_id={0};".format(album_id))
+		owner_id=cursor.fetchone()[0]
+	try:
+		try:
+			return render_template('photo.html',loggedin=getUserIdFromEmail(flask_login.current_user.id), name=owner_id, photo=photo_info, base64=base64)
+
+		except:
+			return render_template('photo.html', name=owner_id, photo=photo_info, base64=base64)
+	except:
+		latest = getLatestPhotos()
+		return render_template('hello.html', message='Photo retrieval failed... Please try again later.', photos=latest, base64=base64, newest="newest")
 
 
 
