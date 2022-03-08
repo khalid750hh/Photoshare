@@ -214,3 +214,19 @@ nav li{
     padding:0;
     border-radius: 10px;
 }
+
+
+#commentSection{
+    clear: both;
+    float: left;
+}
+
+.comment{
+    display: inline-block;
+    clear: both;
+    float: left;
+    background-color: #424041;
+    border-radius: 20px;
+    padding: 0 2vw;
+    margin: 1vw 0;
+}

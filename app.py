@@ -281,14 +281,21 @@ def photo():
 		caption=photo_info[1]
 		photo=photo_info[2]
 		album_id=photo_info[3]
-		cursor.execute("SELECT owner_id FROM albums where album_id={0};".format(album_id))
-		owner_id=cursor.fetchone()[0]
+		cursor.execute("SELECT owner_id, album_name FROM albums where album_id={0};".format(album_id))
+		album_info = cursor.fetchone()
+		owner_id=album_info[0]
+		album_name = album_info[1]
+		cursor.execute("SELECT owner_id, comment_text, date_posted FROM comments WHERE photo_id='{0}'".format(photo_id))
+		all_comments=cursor.fetchall()
+		num_comments=len(all_comments)
+		cursor.execute("SELECT count(liked_photo_id) FROM likes where liked_photo_id='{0}'".format(photo_id))
+		likes_num = cursor.fetchone()[0]
 	try:
 		try:
-			return render_template('photo.html',loggedin=getUserIdFromEmail(flask_login.current_user.id), name=owner_id, photo=photo_info, base64=base64)
+			return render_template('photo.html',loggedin=getUserIdFromEmail(flask_login.current_user.id), name=owner_id, album=album_name, num=num_comments, comments=all_comments, likes=likes_num, photo=photo_info, base64=base64)
 
 		except:
-			return render_template('photo.html', name=owner_id, photo=photo_info, base64=base64)
+			return render_template('photo.html', name=owner_id, num=num_comments, comments=all_comments, likes=likes_num, photo=photo_info, base64=base64)
 	except:
 		latest = getLatestPhotos()
 		return render_template('hello.html', message='Photo retrieval failed... Please try again later.', photos=latest, base64=base64, newest="newest")
@@ -306,9 +313,77 @@ def comment():
 		cursor.execute("SELECT photo_id, caption, photo, album_id FROM photos where photo_id={0}".format(photo_id))
 		photo_info=cursor.fetchone()
 		try:
-			return render_template('photo.html',loggedin=getUserIdFromEmail(flask_login.current_user.id), name=owner_id, photo=photo_info, base64=base64)
+			cursor=conn.cursor()
+			cursor.execute("SELECT photo_id, caption, photo, album_id FROM photos where photo_id={0}".format(photo_id))
+			photo_info=cursor.fetchone()
+			caption=photo_info[1]
+			photo=photo_info[2]
+			album_id=photo_info[3]
+			cursor.execute("SELECT owner_id, album_name FROM albums where album_id={0};".format(album_id))
+			album_info = cursor.fetchone()
+			owner_id=album_info[0]
+			album_name = album_info[1]
+			cursor.execute("SELECT owner_id, comment_text, date_posted FROM comments WHERE photo_id='{0}'".format(photo_id))
+			all_comments=cursor.fetchall()
+			num_comments=len(all_comments)
+			cursor.execute("SELECT count(liked_photo_id) FROM likes where liked_photo_id='{0}'".format(photo_id))
+			likes_num = cursor.fetchone()[0]
+			try:
+				try:
+					return render_template('photo.html',loggedin=getUserIdFromEmail(flask_login.current_user.id), name=owner_id, album=album_name, num=num_comments, comments=all_comments, likes=likes_num, photo=photo_info, base64=base64)
+
+				except:
+					return render_template('photo.html', name=owner_id, album=album_name, num=num_comments, comments=all_comments, likes=likes_num, photo=photo_info, base64=base64)
+			except:
+				latest = getLatestPhotos()
+				return render_template('hello.html', message='Photo retrieval failed... Please try again later.', photos=latest, base64=base64, newest="newest")
+
 		except:
-			return render_template('photo.html', name=owner_id, photo=photo_info, base64=base64)
+			return render_template('photo.html', name=owner_id, album=album_name, num=num_comments, comments=all_comments, likes=likes_num, photo=photo_info, base64=base64)
+
+
+
+
+@app.route("/like", methods=['POST'])
+@flask_login.login_required
+def like():
+	if request.method == 'POST':
+		photo_id=request.form.get('photo_id')
+		user_id=request.form.get('user_id')
+		owner_id=request.form.get('owner_id')
+		cursor = conn.cursor()
+		cursor.execute("SELECT photo_id, caption, photo, album_id FROM photos where photo_id={0}".format(photo_id))
+		photo_info=cursor.fetchone()
+		caption=photo_info[1]
+		photo=photo_info[2]
+		album_id=photo_info[3]
+		cursor.execute("SELECT liker_id, liked_photo_id FROM likes where liker_id = '{0}' and liked_photo_id = '{1}'".format(user_id, photo_id))
+		exists = cursor.rowcount
+		if (exists == 0):
+			cursor.execute("INSERT INTO likes (liker_id, liked_id, liked_photo_id, album_id) VALUES ('{0}', '{1}', '{2}', '{3}' )".format(user_id, owner_id, photo_id, album_id))
+			conn.commit()
+		try:
+			cursor.execute("SELECT owner_id, album_name FROM albums where album_id={0};".format(album_id))
+			album_info = cursor.fetchone()
+			owner_id=album_info[0]
+			album_name = album_info[1]
+			cursor.execute("SELECT owner_id, comment_text, date_posted FROM comments WHERE photo_id='{0}'".format(photo_id))
+			all_comments=cursor.fetchall()
+			num_comments=len(all_comments)
+			cursor.execute("SELECT count(liked_photo_id) FROM likes where liked_photo_id='{0}'".format(photo_id))
+			likes_num = cursor.fetchone()[0]
+			try:
+				try:
+					return render_template('photo.html',loggedin=getUserIdFromEmail(flask_login.current_user.id), name=owner_id, album=album_name,num=num_comments, comments=all_comments, likes=likes_num, photo=photo_info, base64=base64)
+
+				except:
+					return render_template('photo.html', name=owner_id, album=album_name, num=num_comments, comments=all_comments, likes=likes_num, photo=photo_info, base64=base64)
+			except:
+				latest = getLatestPhotos()
+				return render_template('hello.html', message='Photo retrieval failed... Please try again later.', photos=latest, base64=base64, newest="newest")
+
+		except:
+			return render_template('photo.html', name=owner_id, album=album_name, num=num_comments, comments=all_comments, likes=likes_num, photo=photo_info, base64=base64)
 		
 
 #default page
