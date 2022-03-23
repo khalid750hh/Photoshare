@@ -44,18 +44,6 @@
       {% endif %}
     </nav>
 
-    <!-- <div id="options">
-      
-      <div id="notloggedin">
-        <p>You should <a href='/login'>login!</a></p>
-        
-        <p> Go to <a href='/profile'>profile?</a></p>
-      </div>
-
-      
-
-    </div> -->
-
     
     <div id="homepage">
 
@@ -70,6 +58,44 @@
       {% if newest %}
       <h4>Latest images!</h4>
       {% endif %}
+
+      {% if cont %}
+      <div id="mostCont">
+        <ul>
+        {% for user in cont %}
+        
+        <li class="usercont">
+          <h3 class="name">{{user[0]}}, {{user[1]}} contribution points</h3>
+          <form action='profile' method='POST'>
+            <input type="hidden" name="user_id" value={{user[0]}}>
+            <input type='submit' name='submit' value="View profile">
+          </form>
+        </li>
+        {% endfor %}
+        </ul>
+
+      </div>
+      {% endif %}
+
+
+      {% if cont2 %}
+      <div id="mostCont">
+        <ul>
+        {% for user in cont2 %}
+        
+        <li class="usercont">
+          <h3 class="name">{{user[0]}}</h3>
+          <form action='profile' method='POST'>
+            <input type="hidden" name="user_id" value={{user[0]}}>
+            <input type='submit' name='submit' value="View profile">
+          </form>
+        </li>
+        {% endfor %}
+        </ul>
+
+      </div>
+      {% endif %}
+
 
       {% if photos %}
       <div id="photos">

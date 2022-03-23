@@ -46,6 +46,121 @@
         <h2>{{realname}}</h2>
         {% endif %}
 
+        {% if send %}
+        <form action='add' method='POST'>
+            <input type="hidden" name="friend_id" value={{name}}>
+            <input type='submit' name='submit' value="Add friend">
+        </form>
+        {% endif %}
+
+        {% if friends %}
+        <div id="friends">
+            <h2>Friends</h2>
+            <ul>
+                {% for friend in friends %}
+                <li class="friends">
+                    <h2>{{friend[0]}}</h2>
+                    <form action='profile' method='POST'>
+                        <input type="hidden" name="user_id" value={{friend[0]}}>
+                        <input type='submit' name='submit' value="View profile">
+                    </form>
+                </li>
+                {% endfor %}
+            </ul>
+
+        </div>
+
+        {% endif %}
+
+        {% if friendReq %}
+        <h2>Friend requests</h2>
+        <div id="friendReq">
+            <ul>
+                {% for friend in friendReq %}
+                <li class="friends">
+                    <h2>{{friend[0]}}</h2>
+                    <form action='profile' method='POST'>
+                        <input type="hidden" name="user_id" value={{friend[0]}}>
+                        <input type='submit' name='submit' value="View profile">
+                    </form>
+                    <form action='add' method='POST'>
+                        <input type="hidden" name="friend_id" value={{friend[0]}}>
+                        <input type='submit' name='submit' value="Add friend">
+                    </form>
+                </li>
+                {% endfor %}
+            </ul>
+
+        </div>
+
+        {% endif %}
+
+        {% if friend_reccs %}
+        <h2>Friend recommendations</h2>
+        <div id="friendRecc1">
+            <ul>
+                {% for friend in friend_reccs %}
+                <li class="friends">
+                    <h2>{{friend}}</h2>
+                    <form action='profile' method='POST'>
+                        <input type="hidden" name="user_id" value={{friend}}>
+                        <input type='submit' name='submit' value="View profile">
+                    </form>
+                    <form action='add' method='POST'>
+                        <input type="hidden" name="friend_id" value={{friend}}>
+                        <input type='submit' name='submit' value="Add friend">
+                    </form>
+                </li>
+                {% endfor %}
+            </ul>
+
+        </div>
+
+        {% endif %}
+
+        {% if friend_reccs2 %}
+        <h2>Friends you may also like</h2>
+        <div id="friendRecc2">
+            <ul>
+                {% for friend in friend_reccs2 %}
+                <li class="friends">
+                    <h2>{{friend}}</h2>
+                    <form action='profile' method='POST'>
+                        <input type="hidden" name="user_id" value={{friend}}>
+                        <input type='submit' name='submit' value="View profile">
+                    </form>
+                    <form action='add' method='POST'>
+                        <input type="hidden" name="friend_id" value={{friend}}>
+                        <input type='submit' name='submit' value="Add friend">
+                    </form>
+                </li>
+                {% endfor %}
+            </ul>
+
+        </div>
+
+        {% endif %}
+
+
+        {% if albums %}
+        <div id="albums">
+            <h2>{{name}} albums</h2>
+            <ul>
+                {% for album in albums %}
+                <li class="albums">
+                {{album[0]}}
+                <form action='album_display' method='POST'>
+                    <input type="hidden" name="album_name" value={{album[0]}}>
+                    <input type="hidden" name="album_id" value={{album[1]}}>
+                    <input type="hidden" name="owner_id" value={{name}}>
+                    <input type='submit' name='submit' value="View album">
+                </form>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
 
         {% if photos %}
         <div id="photos">

@@ -6,10 +6,86 @@
     </head>
 
     <body>
+
+
+        <header>
+            <h1>Photoshare</h1>
+            <p>Share your life!</p>
+            <hr>
+        </header>
+    
+    
+        <div id="container">
+            <nav>
+                {% if name %}
+                <ul>
+                    <li><a href='/'>Home</a></li>
+                    <li><a href='/profile'>profile</a> </li>
+                    <li><a href="/search">Search for a photo</a></li>
+                    <li><a href='/upload'>Upload a photo</a> </li>
+                    <li><a href='/logout'>Logout</a></li>
+                </ul>
+    
+                {% else %}
+                <ul>
+                    <li><a href='/'>Home</a></li>
+                    <li><a href="/search">Search for a photo</a></li>
+                    <li><a href='/upload'>Upload a photo</a> </li>
+                    <li><a href='/login'>Login</a></li>
+                </ul>
+                {% endif %}
+            </nav>
+
         <form method="post" action="{{ url_for('photo_search') }}">
             <label for="search_space">Search for photos</label>
             <input type="text" name="search_space" /><br />
+            <div>
+                <input type="radio" id="caption" name="searchtype" value="caption"
+                       checked>
+                <label for="caption">Photo caption</label>
+              </div>
+              
+              <div>
+                <input type="radio" id="tags" name="searchtype" value="tags">
+                <label for="tags">Tags (one)</label>
+              </div>
+
+              <div>
+                <input type="radio" id="usertags" name="searchtype" value="usertags">
+                <label for="tags">Your photos by Tags (one)</label>
+              </div>
+              
+              <div>
+                <input type="radio" id="comments" name="searchtype" value="comments">
+                <label for="comments">Comments</label>
             <input type="submit" />
         </form>
+
+        {% if tags %}
+        <div id="popular">
+            <h2>Popular tags</h2>
+            <ul>
+            {% for tag in tags %}
+                <li>{{tag[0]}}, number of photos: {{tag[1]}}
+                    <form action='search' method='POST'>
+                        <input type="hidden" name="search_space" value={{tag[0]}}>
+                        <input type="hidden" name="searchtype" value=tags>                        
+                        <input type='submit' name='submit' value="View photos">
+                    </form>
+                </li>
+            {% endfor %}
+            </ul>
+
+        </div>
+        {% endif %}
+
+        </div>
+
+
+
+        <footer>
+            <hr>
+            <p>Copyright &#174; 2022 by Khalid Almaimouni</p>
+        </footer>
     </body>
 </html>

@@ -42,6 +42,13 @@
             {% endif %}
         </nav>
 
+        {% if deletable %}
+        <form action='photo_delete' method='POST'>
+            <input type="hidden" name="photo_id" value={{photo[0]}}>
+            <input type="hidden" name="owner_id" value={{name}}>
+            <input type='submit' name='submit' value="Delete photo">
+        </form>
+        {% endif %}
 
         {% if photo %}
         <div id="photos" class="single">
@@ -68,6 +75,10 @@
                 <input type="hidden" name="user_id" id="user_id" value={{loggedin}}>
                 <input type="hidden" name="owner_id" id="owner_id" value={{name}}>
                 <input type='submit' name='submit' value="like">
+            </form>
+            <form action='profile' method='POST'>
+                <input type="hidden" name="user_id" value={{name}}>
+                <input type='submit' name='submit' value="View profile">
             </form>
         </div>
 

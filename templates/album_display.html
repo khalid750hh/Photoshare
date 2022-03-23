@@ -1,11 +1,8 @@
-<!-- author ben lawson (balawson@bu.edu) -->
-
 <!DOCTYPE html>
-
 <html>
 
 <head>
-    <title>Upload a photo!</title>
+    <title>{{album_name}} | Photoshare</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet">
@@ -13,12 +10,12 @@
 </head>
 
 <body>
-
     <header>
         <h1>Photoshare</h1>
         <p>Share your life!</p>
         <hr>
     </header>
+
 
     <div id="container">
         <nav>
@@ -41,34 +38,39 @@
             {% endif %}
         </nav>
 
-        {% if albums %}
-        <div class="title">
-            <h1>Upload a photo to Photoshare</h1>
-        </div>
-        <form method="post" enctype="multipart/form-data" action="/upload">
-            <label for="photo">Select photo:</label>
-            <input type="file" name="photo" required='true' /><br />
-            <label for="caption">Caption:</label>
-            <input type="text" name="caption" required='true' /><br />
-            <label for="tags">Tags (seperate by space):</label>
-            <input type="text" name="tags" required='false' /><br />
+        {% if name %}
+        <h1>{{name}}</h1>
+        {% endif %}
 
-            
-            <label for="album">Album:</label>
-            <select name="album" id="album">
-                {% for album in albums %}
-                <option value={{album[0]}}>{{album[1]}}</option>
-                {% endfor %}
-            </select>
+        {% if album_name %}
+        <h2>{{album_name}}</h2>
+        {% endif %}
 
-            
-
-            <input type="submit" value="Upload" />
+        {% if deletable %}
+        <form action='album_delete' method='POST'>
+            <input type="hidden" name="album_id" value={{album_id}}>
+            <input type="hidden" name="album_name" value={{album_name}}>
+            <input type="hidden" name="owner_id" value={{name}}>
+            <input type='submit' name='submit' value="Delete album">
         </form>
-        <a href="/album"> create an album</a>
+        {% endif %}
 
-        {% else %}
-        <p>Please <a href="/album"> create an album</a> first.</p>
+        {% if photos %}
+        <div id="photos">
+            <ul>
+                {% for photo in photos %}
+                <li class="photos">{{photo[1]}}<br>
+                    <img src='data:image/jpg;base64, {{ photo[2] }}' />
+                    <br>
+                    <form action='photo' method='POST'>
+                        <input type="hidden" name="photo_id" value={{photo[0]}}>
+                        <input type='submit' name='submit' value="View photo">
+                    </form>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
         {% endif %}
 
     </div>

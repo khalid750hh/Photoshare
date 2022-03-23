@@ -39,20 +39,30 @@ create table if not exists comments(
 	comment_id int not null auto_increment primary key,
     comment_text varchar(255) not null,
     owner_id varchar(255) not null,
+    photo_id int not null,
     date_posted date not null);
 
+create table if not exists likes(
+	liker_id varchar(255),
+    liked_id varchar(255),
+    liked_photo_id int,
+    primary key(liker_id, liked_photo_id),
+    album_id int
+);
+
     
-alter table friends add foreign key (user1) references users(user_id);
-alter table friends add foreign key (user2) references users(user_id);
-alter table albums add foreign key (owner_id) references users(user_id);
-alter table photos add foreign key (album_id) references albums(album_id);
-alter table tags add foreign key (photo_described) references photos(photo_id);
-alter table comments add foreign key (owner_id) references users(user_id);
+alter table friends add foreign key (user1) references users(user_id) on delete cascade;
+alter table friends add foreign key (user2) references users(user_id) on delete cascade;
+alter table albums add foreign key (owner_id) references users(user_id) on delete cascade;
+alter table photos add foreign key (album_id) references albums(album_id) on delete cascade;
+alter table tags add foreign key (photo_described) references photos(photo_id) on delete cascade;
+alter table comments add foreign key (owner_id) references users(user_id) on delete cascade;
+alter table comments add foreign key (photo_id) references photos(photo_id) on delete cascade;
+alter table likes add foreign key (liker_id) references users(user_id) on delete cascade;
+alter table likes add foreign key (liked_id) references users(user_id) on delete cascade;
+alter table likes add foreign key (liked_photo_id) references photos(photo_id) on delete cascade;
+alter table likes add foreign key (album_id) references albums(album_id) on delete cascade;
 
-
-
-insert into users(user_id, first_name, last_name, email, date_of_birth, hometown, gender, user_password, score) values ("khalid750hh", "Khalid", "Almaimouni", "khalid75@bu.edu", "2000-4-03" , "Riyadh, Saudi Arabia", "Male", "PASSWORD", 0);
-insert into users(user_id, first_name, last_name, email, date_of_birth, hometown, gender, user_password, score) values ("test123", "test", "test", "test@test.com", "2000-4-03" , "test", "test", "test123", 0);
-
+insert into users(user_id, first_name, last_name, email, date_of_birth, hometown, gender, user_password) values ("guest", "guest", "guest", "guest@guest.guest", "2000-1-01" , "guest", "guest", "guest");
 
 select * from users;
