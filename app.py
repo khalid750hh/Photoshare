@@ -622,7 +622,7 @@ def album_delete():
 		cursor.execute("DELETE FROM Albums WHERE album_id = '{0}'".format(album_id))
 		conn.commit()
 		latest = getLatestPhotos()
-		mostContribution = getMostContribution()
+		mostContribution = getMostContribution(10)
 		try:
 			return render_template('hello.html',name=getUserIdFromEmail(flask_login.current_user.id), message='Album deleted.', photos=latest, cont=mostContribution, base64=base64, newest="newest")
 		except:
@@ -637,7 +637,7 @@ def photo_delete():
 	uid = getUserIdFromEmail(flask_login.current_user.id)
 	deletable = (owner_id == uid)
 	latest = getLatestPhotos()
-	mostContribution = getMostContribution()
+	mostContribution = getMostContribution(10)
 	if(deletable):
 		cursor = conn.cursor()
 		cursor.execute("DELETE FROM Photos WHERE photo_id = '{0}';".format(photo_id))
